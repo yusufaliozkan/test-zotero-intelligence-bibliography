@@ -80,6 +80,7 @@ pd.set_option('display.max_colwidth', None)
 df_collections = pd.DataFrame(data2, columns=columns2)
 
 df_collections = df_collections.sort_values(by='Name')
+df_collections
 df_collections=df_collections[df_collections['Name'].str.contains("98.")]
 df_collections = df_collections.iloc[2: , :]
 
