@@ -21,6 +21,8 @@ from wordcloud import WordCloud
 from gsheetsdb import connect
 import gsheetsdb as gdb
 import datetime as dt
+import psycopg2
+
 
 # Connecting Zotero with API
 library_id = '2514686'
