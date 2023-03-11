@@ -37,11 +37,6 @@ st.set_page_config(layout = "wide",
                     initial_sidebar_state="auto") 
 pd.set_option('display.max_colwidth', None)
 
-@st.cache_resource
-def init_connection():
-    return psycopg2.connect(**st.secrets["postgres"])
-
-conn = init_connection()
 
 zot = zotero.Zotero(library_id, library_type)
 
