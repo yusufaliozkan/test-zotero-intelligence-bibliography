@@ -91,9 +91,16 @@ mapping_type = {
 df['Publication type'] = df['Publication type'].replace(mapping_type)
 df
 
-df['Date published'] = pd.to_datetime(df['Date published'], errors='coerce').dt.tz_localize('UTC').dt.tz_convert('Europe/London').dt.strftime('%d-%m-%Y').fillna('No date')
-df['Date added'] = pd.to_datetime(df['Date added'], errors='coerce').dt.strftime('%d/%m/%Y')
-df['Date modified'] = pd.to_datetime(df['Date modified'], errors='coerce').dt.strftime('%d/%m/%Y, %H:%M')
+df['Date published'] = pd.to_datetime(df['Date published'], errors='coerce')
+df['Date published'] = pd.to_datetime(df['Date published'],utc=True).dt.tz_convert('Europe/London')
+df['Date published'] = df['Date published'].dt.strftime('%d-%m-%Y')
+df['Date published'] = df['Date published'].fillna('No date')
+# df['Date published'] = df['Date published'].map(lambda x: x.strftime('%d/%m/%Y') if x else 'No date')
+
+df['Date added'] = pd.to_datetime(df['Date added'], errors='coerce')
+df['Date added'] = df['Date added'].dt.strftime('%d/%m/%Y')
+df['Date modified'] = pd.to_datetime(df['Date modified'], errors='coerce')
+df['Date modified'] = df['Date modified'].dt.strftime('%d/%m/%Y, %H:%M')
 
 # Bringing collections
 bbb = zot.collections()
