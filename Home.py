@@ -65,27 +65,31 @@ def zotero_data(library_id, library_type):
     return df
 
 df = zotero_data(library_id, library_type)
-df
+
 df['Abstract'] = df['Abstract'].replace(r'^\s*$', np.nan, regex=True) # To replace '' with NaN. Otherwise the code below do not understand the value is nan.
 df['Abstract'] = df['Abstract'].fillna('No abstract')
 
 split_df= pd.DataFrame(df['Col key'].tolist())
 df = pd.concat([df, split_df], axis=1)
-df
 
 # Change type name
-df['Publication type'] = df['Publication type'].replace(['thesis'], 'Thesis')
-df['Publication type'] = df['Publication type'].replace(['journalArticle'], 'Journal article')
-df['Publication type'] = df['Publication type'].replace(['book'], 'Book')
-df['Publication type'] = df['Publication type'].replace(['bookSection'], 'Book chapter')
-df['Publication type'] = df['Publication type'].replace(['blogPost'], 'Blog post')
-df['Publication type'] = df['Publication type'].replace(['videoRecording'], 'Video')
-df['Publication type'] = df['Publication type'].replace(['podcast'], 'Podcast')
-df['Publication type'] = df['Publication type'].replace(['magazineArticle'], 'Magazine article')
-df['Publication type'] = df['Publication type'].replace(['webpage'], 'Webpage')
-df['Publication type'] = df['Publication type'].replace(['newspaperArticle'], 'Newspaper article')
-df['Publication type'] = df['Publication type'].replace(['report'], 'Report')
-df['Publication type'] = df['Publication type'].replace(['forumPost'], 'Forum post')
+mapping_type = {
+    'thesis': 'Thesis',
+    'journalArticle': 'Journal article',
+    'book': 'Book',
+    'bookSection': 'Book chapter',
+    'blogPost': 'Blog post',
+    'videoRecording': 'Video',
+    'podcast': 'Podcast',
+    'magazineArticle': 'Magazine article',
+    'webpage': 'Webpage',
+    'newspaperArticle': 'Newspaper article',
+    'report': 'Report',
+    'forumPost': 'Forum post'
+}
+
+df['Publication type'] = df['Publication type'].replace(mapping_type)
+df
 
 df['Date published'] = pd.to_datetime(df['Date published'], errors='coerce')
 df['Date published'] = pd.to_datetime(df['Date published'],utc=True).dt.tz_convert('Europe/London')
