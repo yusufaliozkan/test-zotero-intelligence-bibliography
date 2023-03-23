@@ -172,7 +172,7 @@ with tab1:
         df_download = df.iloc[:, [0,1,2,4,5,6,9]] 
         df_download
         df_download = df_download[['Title', 'Publication type', 'Authors', 'Link to publication', 'Zotero link', 'Date published', 'Date added']]
-
+#### Stayed here
         def convert_df(df):
             return df.to_csv(index=False).encode('utf-8-sig') # not utf-8 because of the weird character,  Â cp1252
         csv = convert_df(df_download)
