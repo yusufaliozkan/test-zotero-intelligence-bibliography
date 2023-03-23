@@ -108,7 +108,6 @@ columns3 = ['Key', 'Name', 'Number', 'Link']
 data3 = [(item['data']['key'], item['data']['name'], item['meta']['numItems'], item['links']['alternate']['href']) for item in bbb]
 pd.set_option('display.max_colwidth', None)
 df_collections_2 = pd.DataFrame(data3, columns=columns3)
-df_collections_2
 
 collections = zot.collections()
 data2=[]
