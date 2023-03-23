@@ -170,6 +170,7 @@ with tab1:
         st.header('Recently added or updated items: ')
             
         df_download = df.iloc[:, [0,1,2,4,5,6,14,15]] 
+        df_download
         df_download = df_download[['Title', 'Publication type', 'Authors', 'Link to publication', 'Zotero link', 'Date published', 'Date added']]
 
         def convert_df(df):
