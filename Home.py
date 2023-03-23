@@ -109,46 +109,55 @@ data3 = [(item['data']['key'], item['data']['name'], item['meta']['numItems'], i
 pd.set_option('display.max_colwidth', None)
 df_collections_2 = pd.DataFrame(data3, columns=columns3)
 
+# collections = zot.collections()
+# data2=[]
+# columns2 = ['Key','Name', 'Link']
+# for item in collections:
+#     data2.append((item['data']['key'], item['data']['name'], item['links']['alternate']['href']))
+
+# pd.set_option('display.max_colwidth', None)
+# df_collections = pd.DataFrame(data2, columns=columns2)
+
+# df_collections = df_collections.sort_values(by='Name')
+
+# if 0 in df:
+#     merged_df = pd.merge(
+#         left=df,
+#         right=df_collections,
+#         left_on=0,
+#         right_on='Key',
+#         how='left'
+#     )
+#     if 1 in merged_df:
+#         merged_df = pd.merge(
+#             left=merged_df,
+#             right=df_collections,
+#             left_on=1,
+#             right_on='Key',
+#             how='left'
+#         )
+#         if 2 in merged_df:
+#             merged_df = pd.merge(
+#                 left=merged_df,
+#                 right=df_collections,
+#                 left_on=2,
+#                 right_on='Key',
+#                 how='left'
+#             ) 
+
+# df = merged_df.copy()
+# df = df.fillna('')
+
 collections = zot.collections()
-data2=[]
-columns2 = ['Key','Name', 'Link']
-for item in collections:
-    data2.append((item['data']['key'], item['data']['name'], item['links']['alternate']['href']))
+df_collections = pd.DataFrame([
+    (item['data']['key'], item['data']['name'], item['links']['alternate']['href'])
+    for item in collections
+], columns=['Key','Name', 'Link']).sort_values(by='Name')
 
-pd.set_option('display.max_colwidth', None)
-df_collections = pd.DataFrame(data2, columns=columns2)
-
-df_collections = df_collections.sort_values(by='Name')
-
-# df['Col1Name'] = df['col1'].map(df_collections['Name'])
-
-if 0 in df:
-    merged_df = pd.merge(
-        left=df,
-        right=df_collections,
-        left_on=0,
-        right_on='Key',
-        how='left'
-    )
-    if 1 in merged_df:
-        merged_df = pd.merge(
-            left=merged_df,
-            right=df_collections,
-            left_on=1,
-            right_on='Key',
-            how='left'
-        )
-        if 2 in merged_df:
-            merged_df = pd.merge(
-                left=merged_df,
-                right=df_collections,
-                left_on=2,
-                right_on='Key',
-                how='left'
-            ) 
-
-df = merged_df.copy()
-df = df.fillna('')
+df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
+    df_collections, left_on=1, right_on='Key', how='left'
+).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
+df
 
 # Streamlit app
 
