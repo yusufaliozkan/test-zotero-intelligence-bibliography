@@ -91,16 +91,23 @@ mapping_type = {
 df['Publication type'] = df['Publication type'].replace(mapping_type)
 df
 
+# Convert 'Date published' column to datetime format and convert time zone
 df['Date published'] = pd.to_datetime(df['Date published'], errors='coerce')
-df['Date published'] = pd.to_datetime(df['Date published'],utc=True).dt.tz_convert('Europe/London')
+df = df.dropna(subset=['Date published'])  # Drop rows with NaT values
+df['Date published'] = df['Date published'].dt.tz_localize('UTC').dt.tz_convert('Europe/London')
+
+# Format 'Date published' column
 df['Date published'] = df['Date published'].dt.strftime('%d-%m-%Y')
 df['Date published'] = df['Date published'].fillna('No date')
-# df['Date published'] = df['Date published'].map(lambda x: x.strftime('%d/%m/%Y') if x else 'No date')
 
+# Convert 'Date added' column to datetime format and format
 df['Date added'] = pd.to_datetime(df['Date added'], errors='coerce')
 df['Date added'] = df['Date added'].dt.strftime('%d/%m/%Y')
+
+# Convert 'Date modified' column to datetime format and format
 df['Date modified'] = pd.to_datetime(df['Date modified'], errors='coerce')
 df['Date modified'] = df['Date modified'].dt.strftime('%d/%m/%Y, %H:%M')
+
 
 # Bringing collections
 bbb = zot.collections()
