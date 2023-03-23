@@ -70,14 +70,8 @@ df['Abstract'] = df['Abstract'].replace(r'^\s*$', np.nan, regex=True) # To repla
 df['Abstract'] = df['Abstract'].fillna('No abstract')
 
 split_df= pd.DataFrame(df['Col key'].tolist())
-df_fa = df['FirstName']
-df_fa = pd.DataFrame(df_fa.tolist())
-df_fa = df_fa[0]
-df_fa = df_fa.apply(lambda x: {} if pd.isna(x) else x) # https://stackoverflow.com/questions/44050853/pandas-json-normalize-and-null-values-in-json
-df_new = pd.json_normalize(df_fa, errors='ignore') 
-df = pd.concat([df, split_df, df_new], axis=1)
-df['firstName'] = df['firstName'].fillna('null')
-df['lastName'] = df['lastName'].fillna('null')
+df = pd.concat([df, split_df], axis=1)
+df
 
 # Change type name
 df['Publication type'] = df['Publication type'].replace(['thesis'], 'Thesis')
