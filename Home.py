@@ -88,7 +88,6 @@ type_map = {
     'report': 'Report',
     'forumPost': 'Forum post'
 }
-
 df['Publication type'] = df['Publication type'].replace(type_map)
 df
 
