@@ -185,6 +185,7 @@ with tab1:
                 st.markdown(f'#### Events in {months[month-1]}')
                 mon = df_gs[df_gs['month']==month_str]
                 df_gs1 = (f"[{mon['event_name']}]" + f"({mon['link']})" + f", organised by **{mon['organiser']}**. Date: {mon['date_new']}, Venue: {mon['venue']}")
+                df_gs1
                 row_nu = len(mon.index)
                 for i in range(row_nu):
                     st.write(f"{i+1}) {df_gs1.iloc[i]}")
