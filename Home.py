@@ -249,45 +249,38 @@ with st.spinner('Retrieving data & updating dashboard...'):
                             "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
                             )
 
-                row_nu_1 = len(df_last.index)
+                row_nu_1 = df_last.shape[0]
+
                 for i in range(row_nu_1):
-                    publication_type = df['Publication type'].iloc[i]
+                    publication_type = df_last.loc[i, 'Publication type']
+                    title = df_last.loc[i, 'Title']
+                    authors = df_last.loc[i, 'Authors']
+                    date_published = df_last.loc[i, 'Date published']
+                    pub_venue = df_last.loc[i, 'Pub_venue']
+                    link_to_pub = df_last.loc[i, 'Link to publication']
+                    zotero_link = df_last.loc[i, 'Zotero link']
+                    
                     if publication_type in ["Journal article", "Magazine article", 'Newspaper article']:
-                        df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
-                                    ' (by ' + '*' + df['Authors'] + '*' + ') ' +
-                                    ' (Published on: ' + df['Date published']+') ' +
-                                    " (Published in: " + "*" + df['Pub_venue'] + "*" + ') '+
-                                    '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
-                                    "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
-                                    )
-                        st.write(f"{i+1}) " + df_last.iloc[i])
+                        publication_info = f"**{publication_type}:** {title}, (by *{authors}*) (Published on: {date_published}) (Published in: *{pub_venue}*) [[Publication link]]({link_to_pub}) [[Zotero link]]({zotero_link})"
                     else:
-                        df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
-                                    ' (by ' + '*' + df['Authors'] + '*' + ') ' +
-                                    ' (Published on: ' + df['Date published']+', ' +
-                                    'Added on: ' + df['Date added']+') '+
-                                    '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
-                                    "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
-                                    )
-                        st.write(f"{i+1}) " + df_last.iloc[i])
+                        date_added = df_last.loc[i, 'Date added']
+                        publication_info = f"**{publication_type}:** {title}, (by *{authors}*) (Published on: {date_published}, Added on: {date_added}) [[Publication link]]({link_to_pub}) [[Zotero link]]({zotero_link})"
+                        
+                    st.write(f"{i+1}) {publication_info}")
+                    
                     if display:
-                        a=''
-                        b=''
-                        c=''
-                        if 'Name_x' in df:
-                            a= '['+'['+df['Name_x'].iloc[i]+']' +'('+ df['Link_x'].iloc[i] + ')'+ ']'
-                            if 'Name_y' in df:
-                                b='['+'['+df['Name_y'].iloc[i]+']' +'('+ df['Link_y'].iloc[i] + ')' +']'
-                                if df['Name_y'].iloc[i]=='':
-                                    b=''
-                                if 'Name' in df:
-                                    c= '['+'['+df['Name'].iloc[i]+']' +'('+ df['Link'].iloc[i] + ')'+ ']'
-                                    if df['Name'].iloc[i]=='':
-                                        c=''
-                        else:
-                            st.caption('No theme to display!')
-                        st.caption('Theme(s):  \n ' + a + ' ' +b+ ' ' + c)
-                        st.caption('Abstract: '+ df['Abstract'].iloc[i])
+                        themes = []
+                        for col in ['Name_x', 'Link_x', 'Name_y', 'Link_y', 'Name', 'Link']:
+                            if col in df_last.columns and df_last.loc[i, col]:
+                                theme = f"[{df_last.loc[i, col+'_x']}]({df_last.loc[i, col+'_y']})"
+                                themes.append(theme)
+                                
+                        theme_str = '  \n '.join(themes)
+                        st.caption(f'Theme(s): {theme_str}')
+                        st.caption(f'Abstract: {df_last.loc[i, "Abstract"]}')
+                    else:
+                        st.caption('No theme to display!')
+
         
 
         # Items by Collection list
