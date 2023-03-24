@@ -105,13 +105,15 @@ df['Date modified'] = df['Date modified'].dt.strftime('%d/%m/%Y, %H:%M')
 
 @st.cache_data(ttl=600)
 def zotero_collections2(library_id, library_type):
-    collections = zot.collections()
-    data = [(item['data']['key'], item['data']['name'], item['meta']['numItems'], item['links']['alternate']['href']) for item in collections]
-    df_collections = pd.DataFrame(data, columns=['Key', 'Name', 'Number', 'Link'])
-    df_collections.sort_values(by='Name', inplace=True)
-    return df_collections
+    bbb = zot.collections()
+    data3=[]
+    columns3 = ['Key','Name', 'Number', 'Link']
+    for item in bbb:
+        data3.append((item['data']['key'], item['data']['name'], item['meta']['numItems'], item['links']['alternate']['href']))
+    pd.set_option('display.max_colwidth', None)
+    df_collections_2 = pd.DataFrame(data3, columns=columns3)
+    return df_collections_2
 df_collections_2 = zotero_collections2(library_id, library_type)
-
 df_collections_2
 
 @st.cache_data
