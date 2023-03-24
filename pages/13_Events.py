@@ -176,23 +176,30 @@ with tab1:
                 df_last.fillna('')
                 if display:
                     st.caption('Details:'+'\n '+ df_o['details'].iloc[j])
+    month_dict = {'01': 'January',
+                '02': 'February',
+                '03': 'March',
+                '04': 'April',
+                '05': 'May',
+                '06': 'June',
+                '07': 'July',
+                '08': 'August',
+                '09': 'September',
+                '10': 'October',
+                '11': 'November',
+                '12': 'December'}
 
     if sort_by == 'Date':
-        df_gs = df_gs.reset_index()
-        df_gs
-        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        for month in range(1, 13):
-            month_str = str(month).zfill(2)
-            if month_str in df_gs['month'].values:
-                st.markdown(f'#### Events in {months[month-1]}')
-                mon = df_gs[df_gs['month']==month_str]
-                df_gs1 = (f"[{mon['event_name']}]" + f"({mon['link']})" + f", organised by **{mon['organiser']}**. Date: {mon['date_new']}, Venue: {mon['venue']}")
+        for month_num, month_name in month_dict.items():
+            if month_num in df_gs['month'].values:
+                st.markdown(f'#### Events in {month_name}')
+                mon = df_gs[df_gs['month']==month_num]
+                df_gs1 = (f"[{mon['event_name']}]({mon['link']}) organised by **{mon['organiser']}**. Date: {mon['date_new']}, Venue: {mon['venue']}")
                 row_nu = len(mon.index)
                 for i in range(row_nu):
                     st.write(f"{i+1}) {df_gs1.iloc[i]}")
                     if display:
-                        st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
+                        st.caption(f"Details:\n{mon['details'].iloc[i]}")
 
 
 
