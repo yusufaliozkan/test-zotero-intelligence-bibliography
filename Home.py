@@ -242,7 +242,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
                 display = st.checkbox('Display theme and abstract')
 
                 df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
-                            ' (by ' + '*' + df['firstName'] + '*'+ ' ' + '*' + df['lastName'] + '*' + ') ' +
+                            ' (by ' + '*' + df['Authors'] + '*' + ') ' +
                             ' (Published on: ' + df['Date published']+', ' +
                             'Added on: ' + df['Date added']+')'+
                             '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
@@ -254,7 +254,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
                     publication_type = df['Publication type'].iloc[i]
                     if publication_type in ["Journal article", "Magazine article", 'Newspaper article']:
                         df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
-                                    ' (by ' + '*' + df['firstName'] + '*'+ ' ' + '*' + df['lastName'] + '*' + ') ' +
+                                    ' (by ' + '*' + df['Authors'] + '*' + ') ' +
                                     ' (Published on: ' + df['Date published']+') ' +
                                     " (Published in: " + "*" + df['Pub_venue'] + "*" + ') '+
                                     '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
@@ -263,7 +263,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
                         st.write(f"{i+1}) " + df_last.iloc[i])
                     else:
                         df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
-                                    ' (by ' + '*' + df['firstName'] + '*'+ ' ' + '*' + df['lastName'] + '*' + ') ' +
+                                    ' (by ' + '*' + df['Authors'] + '*' + ') ' +
                                     ' (Published on: ' + df['Date published']+', ' +
                                     'Added on: ' + df['Date added']+') '+
                                     '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
