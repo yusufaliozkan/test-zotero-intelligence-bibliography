@@ -120,8 +120,6 @@ def zotero_collections(library_id, library_type):
     return df_collections.sort_values(by='Name')
 df_collections = zotero_collections(library_id, library_type)
 
-df_collections
-
 # df['Col1Name'] = df['col1'].map(df_collections['Name'])
 
 if 0 in df:
@@ -151,6 +149,7 @@ if 0 in df:
 
 df = merged_df.copy()
 df = df.fillna('')
+df
 
 # Streamlit app
 
