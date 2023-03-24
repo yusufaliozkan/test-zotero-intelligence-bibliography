@@ -17,22 +17,23 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 from wordcloud import WordCloud
 from gsheetsdb import connect
-import datetime as dt     
-
+import datetime as dt
+from urllib.parse import urlparse
 
 st.set_page_config(layout = "centered", 
-                    page_title='Intelligence bibliography',
+                    page_title='Intelligence studies network',
                     page_icon="https://images.pexels.com/photos/315918/pexels-photo-315918.png",
                     initial_sidebar_state="auto") 
 
-st.title("Events on intelligence")
+st.title("Intelligence studies network")
+st.header("Events on intelligence")
 image = 'https://images.pexels.com/photos/315918/pexels-photo-315918.png'
 
 
 with st.sidebar:
 
     st.image(image, width=150)
-    st.sidebar.markdown("# Intelligence bibliography")
+    st.sidebar.markdown("# Intelligence studies network")
     with st.expander('About'):
         st.write('''This website lists secondary sources on intelligence studies and intelligence history.
         The sources are originally listed in the [Intelligence bibliography Zotero library](https://www.zotero.org/groups/2514686/intelligence_bibliography).
@@ -104,6 +105,29 @@ with tab1:
     df_gs['details'] = df_gs['details'].fillna('No details')
     df_gs = df_gs.fillna('')
     df_gs_plot = df_gs.copy()
+
+    sheet_url_forms = st.secrets["public_gsheets_url_forms"]
+    rows = run_query(f'SELECT * FROM "{sheet_url_forms}"')
+    data = []
+    columns = ['event_name', 'organiser', 'link', 'date', 'venue', 'details']
+    # Print results.
+    for row in rows:
+        data.append((row.Event_name, row.Event_organiser, row.Link_to_the_event, row.Date_of_event, row.Event_venue, row.Details))
+    pd.set_option('display.max_colwidth', None)
+    df_forms = pd.DataFrame(data, columns=columns)
+
+    df_forms['date_new'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%d/%m/%Y')
+    df_forms['month'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%m')
+    df_forms['year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y')
+    df_forms['month_year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y-%m')
+    df_forms.sort_values(by='date', ascending = True, inplace=True)
+    df_forms = df_forms.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
+    
+    df_forms['details'] = df_forms['details'].fillna('No details')
+    df_forms = df_forms.fillna('')
+    df_gs = pd.concat([df_gs, df_forms], axis=0)
+    df_gs = df_gs.reset_index(drop=True)
+    df_gs = df_gs.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
     
     col1, col2 = st.columns(2)
 
@@ -154,7 +178,7 @@ with tab1:
                     st.caption('Details:'+'\n '+ df_o['details'].iloc[j])
 
     if sort_by == 'Date':
-
+        df_gs = df_gs.sort_values(by='date')
         if '01' in df_gs['month'].values:
             st.markdown('#### Events in January')
             mon = df_gs[df_gs['month']=='01']
@@ -366,6 +390,7 @@ with tab1:
         organiser_plot_all=organiser_plot_all.sort_values('Organiser', ascending=True)
         for i in range(row_nu_organiser):
             st.caption(organiser_plot_all['Organiser'].iloc[i])
+
 
 with tab2:
     st.subheader('Conferences')
