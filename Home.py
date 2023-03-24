@@ -89,7 +89,6 @@ type_map = {
     'forumPost': 'Forum post'
 }
 df['Publication type'] = df['Publication type'].replace(type_map)
-df
 
 df['Date published'] = pd.to_datetime(df['Date published'], errors='coerce')
 df['Date published'] = pd.to_datetime(df['Date published'],utc=True).dt.tz_convert('Europe/London')
@@ -115,6 +114,7 @@ def zotero_collections2(library_id, library_type):
     df_collections_2 = pd.DataFrame(data3, columns=columns3)
     return df_collections_2
 df_collections_2 = zotero_collections2(library_id, library_type)
+df_collections_2
 
 @st.cache_data
 def zotero_collections(library_id, library_type):
