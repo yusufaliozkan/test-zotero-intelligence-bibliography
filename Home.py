@@ -118,7 +118,6 @@ df_collections = pd.DataFrame([
 df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
     df_collections, left_on=1, right_on='Key', how='left'
 ).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
-df
 
 # Streamlit app
 
