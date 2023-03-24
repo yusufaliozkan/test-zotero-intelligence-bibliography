@@ -270,11 +270,11 @@ with st.spinner('Retrieving data & updating dashboard...'):
                     if display:
                         themes = []
                         if name_x and link_x:
-                            themes.append(f"[{name_x}]({link_x})")
+                            themes.append(f"[[{name_x}]({link_x})]")
                         if name_y and link_y:
-                            themes.append(f"[{name_y}]({link_y})")
+                            themes.append(f"[[{name_y}]({link_y})]")
                         if name and link:
-                            themes.append(f"[{name}]({link})")
+                            themes.append(f"[[{name}]({link})]")
                         if not themes:
                             st.caption('No theme to display!')
                         else:
