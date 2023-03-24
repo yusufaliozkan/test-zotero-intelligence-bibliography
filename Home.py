@@ -118,22 +118,37 @@ def zotero_collections(library_id, library_type):
     df_collections = pd.DataFrame(data2, columns=['Key', 'Name', 'Link'])
     pd.set_option('display.max_colwidth', None)
     return df_collections.sort_values(by='Name')
-
 df_collections = zotero_collections(library_id, library_type)
 
 # df['Col1Name'] = df['col1'].map(df_collections['Name'])
-if any(str(i) in df for i in range(len(df.columns))):
-    for i in range(len(df.columns)):
-        if str(i) in df:
-            df = df.merge(
+df
+if 0 in df:
+    merged_df = pd.merge(
+        left=df,
+        right=df_collections,
+        left_on=0,
+        right_on='Key',
+        how='left'
+    )
+    if 1 in merged_df:
+        merged_df = pd.merge(
+            left=merged_df,
+            right=df_collections,
+            left_on=1,
+            right_on='Key',
+            how='left'
+        )
+        if 2 in merged_df:
+            merged_df = pd.merge(
+                left=merged_df,
                 right=df_collections,
-                left_on=i,
+                left_on=2,
                 right_on='Key',
                 how='left'
-            )
+            ) 
 
+df = merged_df.copy()
 df = df.fillna('')
-
 df
 
 # Streamlit app
