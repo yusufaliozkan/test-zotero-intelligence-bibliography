@@ -151,7 +151,7 @@ if 0 in df:
                 how='left'
             ) 
 
-# df = merged_df.copy()
+df = merged_df.copy()
 df = df.fillna('')
 df
 
