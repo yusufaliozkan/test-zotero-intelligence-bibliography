@@ -193,8 +193,7 @@ with tab1:
         for month_num, month_name in month_dict.items():
             if month_num in df_gs['month'].values:
                 st.markdown(f'#### Events in {month_name}')
-                mon = df_gs[df_gs['month']==month_num]
-                mon
+                mon = df_gs[df_gs['month']==month_num] 
                 df_mon = mon[['event_name', 'link', 'organiser', 'date_new', 'venue', 'details']]
                 row_nu = len(df_mon.index)
                 for i in range(row_nu):
