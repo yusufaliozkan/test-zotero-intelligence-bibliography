@@ -125,6 +125,7 @@ df_collections = zotero_collections(library_id, library_type)
 df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
     df_collections, left_on=1, right_on='Key', how='left'
 ).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
+df = merged_df.copy()
 df = df.fillna('')
 df
 
