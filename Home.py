@@ -223,7 +223,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
         col1, col2 = st.columns([5,2]) 
         with col1:
             st.header('Recently added or updated items: ')
-                
+            df    
             df_download = df.iloc[:, [0,1,2,3,4,5,6]] 
             df_download = df_download[['Title', 'Publication type', 'Authors', 'Abstract', 'Link to publication', 'Zotero link', 'Date published', 'Date added']]
 
