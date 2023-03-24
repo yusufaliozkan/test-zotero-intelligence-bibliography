@@ -206,21 +206,19 @@ with tab1:
 
     st.header('Past events')
     with st.expander('Expand to see the list'):
-        # Get unique years in the dataframe
+        # assuming df_gs2['year'] contains years
         years = df_gs2['year'].unique()
 
-        # Loop through each year and display events for that year in a checkbox
         for year in years:
             if st.checkbox(f"Events in {year}", key=year):
                 if year in df_gs2['year'].values:
-                    year_data = df_gs2[df_gs2['year']==year].copy()
-                    year_data['link'] = year_data['link'].fillna('')
-                    year_data = year_data.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
-                    row_nu = len(year_data.index)
-                    df_gs3 = ('['+ year_data['event_name'] + ']'+ '('+ year_data['link'] + ')'', organised by ' + '**' + year_data['organiser'] + '**' + '. Date: ' + year_data['date_new'] + ', Venue: ' + year_data['venue'])
-                    st.write(f"{row_nu} events happened in {year}")
-                    for i, event in df_gs3.iteritems():
-                        st.write(f"{i+1}) {event}")
+                    events = df_gs2[df_gs2['year']==year].drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
+                    events['link'] = events['link'].fillna('')
+                    num_events = len(events.index)
+                    event_strs = ('['+ events['event_name'] + ']'+ '('+ events['link'] + ')'', organised by ' + '**' + events['organiser'] + '**' + '. Date: ' + events['date_new'] + ', Venue: ' + events['venue'])
+                    st.write(f"{num_events} events happened in {year}")
+                    for i, event_str in enumerate(event_strs):
+                        st.write(f"{i+1}) {event_str}")
 
     
     st.header('Event visuals')
