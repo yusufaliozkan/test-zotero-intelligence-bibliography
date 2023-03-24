@@ -206,28 +206,22 @@ with tab1:
 
     st.header('Past events')
     with st.expander('Expand to see the list'):
-        if st.checkbox('Events in 2023', key='2023'): 
-            df_gs2           
-            if '2023' in df_gs2['year'].values:
-                y2023 = df_gs2[df_gs2['year']=='2023']
-                y2023['link'] = y2023['link'].fillna('')
-                row_nu2 = len(y2023.index)
-                df_gs3 = ('['+ y2023['event_name'] + ']'+ '('+ y2023['link'] + ')'', organised by ' + '**' + y2023['organiser'] + '**' + '. Date: ' + y2023['date_new'] + ', Venue: ' + y2023['venue'])
-                row_nu = len(df_gs.index)
-                st.write(str(row_nu2) + ' events happened in 2023')
-                for i in range(row_nu2):
-                    st.write(''+str(i+1)+') '+ df_gs3.iloc[i])
-        if st.checkbox('Events in 2022', key='2022'):
-            if '2022' in df_gs2['year'].values:
-                y2022 = df_gs2[df_gs2['year']=='2022']
-                y2022['link'] = y2022['link'].fillna('')
-                y2022 = y2022.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
-                row_nu2 = len(y2022.index)
-                df_gs3 = ('['+ y2022['event_name'] + ']'+ '('+ y2022['link'] + ')'', organised by ' + '**' + y2022['organiser'] + '**' + '. Date: ' + y2022['date_new'] + ', Venue: ' + y2022['venue'])
-                row_nu = len(df_gs.index)
-                st.write(str(row_nu2) + ' events happened in 2022')
-                for i in range(row_nu2):
-                    st.write(''+str(i+1)+') '+ df_gs3.iloc[i])
+        # Get unique years in the dataframe
+        years = df_gs2['year'].unique()
+
+        # Loop through each year and display events for that year in a checkbox
+        for year in years:
+            if st.checkbox(f"Events in {year}", key=year):
+                if year in df_gs2['year'].values:
+                    year_data = df_gs2[df_gs2['year']==year].copy()
+                    year_data['link'] = year_data['link'].fillna('')
+                    year_data = year_data.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
+                    row_nu = len(year_data.index)
+                    df_gs3 = ('['+ year_data['event_name'] + ']'+ '('+ year_data['link'] + ')'', organised by ' + '**' + year_data['organiser'] + '**' + '. Date: ' + year_data['date_new'] + ', Venue: ' + year_data['venue'])
+                    st.write(f"{row_nu} events happened in {year}")
+                    for i, event in df_gs3.iteritems():
+                        st.write(f"{i+1}) {event}")
+
     
     st.header('Event visuals')
     ap = ''
