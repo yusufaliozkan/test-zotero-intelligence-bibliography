@@ -250,11 +250,16 @@ with st.spinner('Retrieving data & updating dashboard...'):
                             )
 
                 row_nu_1 = len(df_last.index)
-                for i, (publication_type, title, authors, date_published, pub_venue, link_to_publication, zotero_link, date_added) in df.loc[:, ['Publication type', 'Title', 'Authors', 'Date published', 'Pub_venue', 'Link to publication', 'Zotero link', 'Date added']].itertuples(index=True):
-                    if publication_type in ["Journal article", "Magazine article", 'Newspaper article']:
-                        df_last = f"**{publication_type}** : {title}, (by *{authors}*) (Published on: {date_published}) (Published in: *{pub_venue}*) [[Publication link]]({link_to_publication}) [[Zotero link]]({zotero_link})"
-                    else:
-                        df_last = f"**{publication_type}** : {title}, (by *{authors}*) (Published on: {date_published}, Added on: {date_added}) [[Publication link]]({link_to_publication}) [[Zotero link]]({zotero_link})"
+                for i in range(row_nu_1):
+                    publication_type = df['Publication type'].iloc[i]
+                    pub_info = (' (Published on: ' + df['Date published'] + ') ' +
+                                " (Published in: " + "*" + df['Pub_venue'] + "*" + ') ' 
+                                if publication_type in ["Journal article", "Magazine article", 'Newspaper article']
+                                else ' (Published on: ' + df['Date published'] + ', ' +
+                                    'Added on: ' + df['Date added'] + ') ')
+                    df_last = f'**{df["Publication type"].iloc[i]}**: {df["Title"].iloc[i]}, ' \
+                            f'(by *{df["Authors"].iloc[i]}*){pub_info}[[Publication link]]({df["Link to publication"].iloc[i]})' \
+                            f'[[Zotero link]]({df["Zotero link"].iloc[i]})'
                     st.write(f"{i+1}) {df_last}")
 
                     if display:
