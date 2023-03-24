@@ -314,23 +314,23 @@ with tab2:
     with col2:
         last_added = st.checkbox('Sort by most recently added', key='conference2')
 
-    df_con = df_con[df_con['date_end'] >= today]
+        df_con = df_con[df_con['date_end'] >= today]
 
-    if df_con['conference_name'].any():
-        df_con = df_con.sort_index(ascending=False)
-        df_con1 = (f"[{df_con['conference_name']}]" 
-                + f"({df_con['link']})" 
-                + f", organised by **{df_con['organiser']}**" 
-                + f". Date(s): {df_con['date_new']} - {df_con['date_new_end']}" 
-                + f", Venue: {df_con['venue']}")
-        row_nu = len(df_con.index)
-        for i, event in df_con1.iteritems():
-            st.write(f"{i+1}) {event}")
-            if display:
-                st.caption('Conference place:'+'\n '+ df_con['location'].iloc[i])
-                st.caption('Details:'+'\n '+ df_con['details'].iloc[i])
-    else:
-        st.write('No upcoming conference!')
+        if df_con['conference_name'].any():
+            df_con = df_con.sort_index(ascending=False)
+            df_con1 = (f"[{df_con['conference_name']}]" 
+                    + f"({df_con['link']})" 
+                    + f", organised by **{df_con['organiser']}**" 
+                    + f". Date(s): {df_con['date_new']} - {df_con['date_new_end']}" 
+                    + f", Venue: {df_con['venue']}")
+            row_nu = len(df_con.index)
+            for i, event in df_con1.iteritems():
+                st.write(f"{i+1}) {event}")
+                if display:
+                    st.caption('Conference place:'+'\n '+ df_con['location'].iloc[i])
+                    st.caption('Details:'+'\n '+ df_con['details'].iloc[i])
+        else:
+            st.write('No upcoming conference!')
 
         
 with tab3:
