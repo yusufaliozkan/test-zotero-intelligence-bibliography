@@ -121,7 +121,7 @@ def zotero_collections(library_id, library_type):
 df_collections = zotero_collections(library_id, library_type)
 
 # df['Col1Name'] = df['col1'].map(df_collections['Name'])
-df
+
 if 0 in df:
     merged_df = pd.merge(
         left=df,
