@@ -114,14 +114,12 @@ df_collections_2 = zotero_collections2(library_id, library_type)
 @st.cache_data
 def zotero_collections(library_id, library_type):
     collections = zot.collections()
-    data2=[]
-    columns2 = ['Key','Name', 'Link']
-    for item in collections:
-        data2.append((item['data']['key'], item['data']['name'], item['links']['alternate']['href']))
+    data2 = [(item['data']['key'], item['data']['name'], item['links']['alternate']['href']) for item in collections]
+    df_collections = pd.DataFrame(data2, columns=['Key', 'Name', 'Link'])
     pd.set_option('display.max_colwidth', None)
-    df_collections = pd.DataFrame(data2, columns=columns2)
-    return df_collections
+    return df_collections.sort_values(by='Name')
 df_collections = zotero_collections(library_id, library_type)
+
 
 df_collections = df_collections.sort_values(by='Name')
 df_collections
