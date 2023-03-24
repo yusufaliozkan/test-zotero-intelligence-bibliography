@@ -223,7 +223,6 @@ with tab1:
                         st.caption('Theme(s):  \n ' + ' '.join(themes))
                     st.caption('Abstract: '+ abstract)
 
-
     # Items by Collection list
 
         # st.header('Items by collection: ')
