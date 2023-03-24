@@ -126,6 +126,7 @@ df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
     df_collections, left_on=1, right_on='Key', how='left'
 ).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
 
+#To be deleted
 # if 0 in df:
 #     merged_df = pd.merge(
 #         left=df,
@@ -151,9 +152,9 @@ df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
 #                 how='left'
 #             ) 
 # df = merged_df.copy()
+#To be deleted
 
 df = df.fillna('')
-df
 
 # Streamlit app
 
@@ -223,9 +224,8 @@ with st.spinner('Retrieving data & updating dashboard...'):
         with col1:
             st.header('Recently added or updated items: ')
                 
-            df_download = df.iloc[:, [0,1,2,4,5,6,14,15]] 
-            df_download['First author'] = df['firstName'] + ' ' + df['lastName']
-            df_download = df_download[['Title', 'Publication type', 'First author', 'Link to publication', 'Zotero link', 'Date published', 'Date added']]
+            df_download = df.iloc[:, [0,1,2,3,4,5,6]] 
+            df_download = df_download[['Title', 'Publication type', 'Authors', 'Abstract', 'Link to publication', 'Zotero link', 'Date published', 'Date added']]
 
             def convert_df(df):
                 return df.to_csv(index=False).encode('utf-8-sig') # not utf-8 because of the weird character,  Â cp1252
