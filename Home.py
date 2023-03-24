@@ -271,23 +271,21 @@ with st.spinner('Retrieving data & updating dashboard...'):
                                     )
                         st.write(f"{i+1}) " + df_last.iloc[i])
                     if display:
-                        a=''
-                        b=''
-                        c=''
-                        if 'Name_x' in df:
-                            a= '['+'['+df['Name_x'].iloc[i]+']' +'('+ df['Link_x'].iloc[i] + ')'+ ']'
-                            if 'Name_y' in df:
-                                b='['+'['+df['Name_y'].iloc[i]+']' +'('+ df['Link_y'].iloc[i] + ')' +']'
-                                if df['Name_y'].iloc[i]=='':
-                                    b=''
-                                if 'Name' in df:
-                                    c= '['+'['+df['Name'].iloc[i]+']' +'('+ df['Link'].iloc[i] + ')'+ ']'
-                                    if df['Name'].iloc[i]=='':
-                                        c=''
-                        else:
+                        links = []
+                        for column in ['Link_x', 'Link_y', 'Link']:
+                            if column in df:
+                                name_column = column.replace('Link', 'Name')
+                                if not pd.isna(df[column].iloc[i]):
+                                    name = df[name_column].iloc[i]
+                                    if not pd.isna(name):
+                                        link = f'[[{name}]({df[column].iloc[i]})]'
+                                        links.append(link)
+                        if not links:
                             st.caption('No theme to display!')
-                        st.caption('Theme(s):  \n ' + a + ' ' +b+ ' ' + c)
-                        st.caption('Abstract: '+ df['Abstract'].iloc[i])
+                        else:
+                            st.caption('Theme(s): ' + ' '.join(links))
+                            st.caption('Abstract: ' + df['Abstract'].iloc[i])
+
         
 
         # Items by Collection list
