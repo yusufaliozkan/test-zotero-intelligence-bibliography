@@ -122,7 +122,7 @@ df_collections = zotero_collections(library_id, library_type)
 
 # df['Col1Name'] = df['col1'].map(df_collections['Name'])
 df
-keys = [col for col in df.columns if col.isnumeric()]
+keys = [col for col in df.columns if str(col).isnumeric()]
 merged_df = df.merge(df_collections, left_on=keys, right_on='Key', how='left')
 df = merged_df.fillna('')
 
