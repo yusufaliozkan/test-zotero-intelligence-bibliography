@@ -252,16 +252,24 @@ with st.spinner('Retrieving data & updating dashboard...'):
                 row_nu_1 = len(df_last.index)
                 for i in range(row_nu_1):
                     publication_type = df['Publication type'].iloc[i]
-                    pub_info = (' (Published on: ' + df['Date published'] + ') ' +
-                                " (Published in: " + "*" + df['Pub_venue'] + "*" + ') ' 
-                                if publication_type in ["Journal article", "Magazine article", 'Newspaper article']
-                                else ' (Published on: ' + df['Date published'] + ', ' +
-                                    'Added on: ' + df['Date added'] + ') ')
-                    df_last = f'**{df["Publication type"].iloc[i]}**: {df["Title"].iloc[i]}, ' \
-                            f'(by *{df["Authors"].iloc[i]}*){pub_info}[[Publication link]]({df["Link to publication"].iloc[i]})' \
-                            f'[[Zotero link]]({df["Zotero link"].iloc[i]})'
-                    st.write(f"{i+1}) {df_last}")
-
+                    if publication_type in ["Journal article", "Magazine article", 'Newspaper article']:
+                        df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
+                                    ' (by ' + '*' + df['Authors'] + '*' + ') ' +
+                                    ' (Published on: ' + df['Date published']+') ' +
+                                    " (Published in: " + "*" + df['Pub_venue'] + "*" + ') '+
+                                    '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
+                                    "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
+                                    )
+                        st.write(f"{i+1}) " + df_last.iloc[i])
+                    else:
+                        df_last = ('**'+ df['Publication type']+ '**'+ ': ' + df['Title'] +', ' +                        
+                                    ' (by ' + '*' + df['Authors'] + '*' + ') ' +
+                                    ' (Published on: ' + df['Date published']+', ' +
+                                    'Added on: ' + df['Date added']+') '+
+                                    '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
+                                    "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
+                                    )
+                        st.write(f"{i+1}) " + df_last.iloc[i])
                     if display:
                         a=''
                         b=''
