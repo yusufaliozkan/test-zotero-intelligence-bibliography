@@ -176,19 +176,20 @@ with tab1:
                 df_last.fillna('')
                 if display:
                     st.caption('Details:'+'\n '+ df_o['details'].iloc[j])
-    month_dict = {'01': 'January',
-                '02': 'February',
-                '03': 'March',
-                '04': 'April',
-                '05': 'May',
-                '06': 'June',
-                '07': 'July',
-                '08': 'August',
-                '09': 'September',
-                '10': 'October',
-                '11': 'November',
-                '12': 'December'}
+
     if sort_by == 'Date':
+        month_dict = {'01': 'January',
+            '02': 'February',
+            '03': 'March',
+            '04': 'April',
+            '05': 'May',
+            '06': 'June',
+            '07': 'July',
+            '08': 'August',
+            '09': 'September',
+            '10': 'October',
+            '11': 'November',
+            '12': 'December'}
         for month_num, month_name in month_dict.items():
             if month_num in df_gs['month'].values:
                 st.markdown(f'#### Events in {month_name}')
