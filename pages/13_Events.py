@@ -182,9 +182,9 @@ with tab1:
         df_gs = df_gs.sort_values(by='date')
         df_gs
         for month in months:
-            if month[:3] in df_gs['month'].unique():
+            if month[:2] in df_gs['month'].unique():
                 st.markdown(f"#### Events in {month}")
-                mon = df_gs[df_gs['month'] == month[:3]]
+                mon = df_gs[df_gs['month'] == month[:2]]
                 df_gs1 = (f"[{mon['event_name']}]" + f"({mon['link']})" + f", organised by **{mon['organiser']}**. Date: {mon['date_new']}, Venue: {mon['venue']}")
                 row_nu = len(mon.index)
                 for i in range(row_nu):
