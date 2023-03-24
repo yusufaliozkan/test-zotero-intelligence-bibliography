@@ -206,7 +206,8 @@ with tab1:
 
     st.header('Past events')
     with st.expander('Expand to see the list'):
-        if st.checkbox('Events in 2023', key='2023'):            
+        if st.checkbox('Events in 2023', key='2023'): 
+            df_gs2           
             if '2023' in df_gs2['year'].values:
                 y2023 = df_gs2[df_gs2['year']=='2023']
                 y2023['link'] = y2023['link'].fillna('')
