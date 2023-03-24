@@ -178,6 +178,7 @@ with tab1:
                     st.caption('Details:'+'\n '+ df_o['details'].iloc[j])
 
     if sort_by == 'Date':
+        df_gs = df_gs.reset_index(inplace=True)
         df_gs
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         for month in range(1, 13):
