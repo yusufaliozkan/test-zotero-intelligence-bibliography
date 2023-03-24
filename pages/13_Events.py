@@ -188,18 +188,18 @@ with tab1:
                 '10': 'October',
                 '11': 'November',
                 '12': 'December'}
-
     if sort_by == 'Date':
         for month_num, month_name in month_dict.items():
             if month_num in df_gs['month'].values:
                 st.markdown(f'#### Events in {month_name}')
                 mon = df_gs[df_gs['month']==month_num]
-                df_gs1 = (f"[{mon['event_name']}]({mon['link']}) organised by **{mon['organiser']}**. Date: {mon['date_new']}, Venue: {mon['venue']}")
-                row_nu = len(mon.index)
+                df_mon = mon[['event_name', 'link', 'organiser', 'date_new', 'venue', 'details']]
+                row_nu = len(df_mon.index)
                 for i in range(row_nu):
-                    st.write(f"{i+1}) {df_gs1.iloc[i]}")
+                    st.write(f"{i+1}) [{df_mon.iloc[i]['event_name']}]({df_mon.iloc[i]['link']}) organised by **{df_mon.iloc[i]['organiser']}**. Date: {df_mon.iloc[i]['date_new']}, Venue: {df_mon.iloc[i]['venue']}")
                     if display:
-                        st.caption(f"Details:\n{mon['details'].iloc[i]}")
+                        st.caption(f"Details:\n{df_mon.iloc[i]['details']}")
+
 
 
 
