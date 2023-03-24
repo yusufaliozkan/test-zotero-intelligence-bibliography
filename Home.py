@@ -243,29 +243,44 @@ with st.spinner('Retrieving data & updating dashboard...'):
 
                 for i, row in df.iterrows():
                     publication_type = row['Publication type']
-                    publication_link = f"[[Publication link]]({row['Link to publication']})"
-                    zotero_link = f"[[Zotero link]]({row['Zotero link']})"
-                    authors = f"(by *{row['Authors']}*) "
-                    title = f"{row['Title']}, "
-                    published_on = f"(Published on: {row['Date published']})"
-                    
-                    if publication_type in ["Journal article", "Magazine article", 'Newspaper article']:
-                        pub_venue = f"(Published in: *{row['Pub_venue']}*)"
-                        text = f"**{publication_type}**: {title} {authors} {published_on} {pub_venue} {publication_link} {zotero_link}"
+                    title = row['Title']
+                    authors = row['Authors']
+                    date_published = row['Date published']
+                    date_added = row['Date added']
+                    pub_venue = row.get('Pub_venue', '')
+                    link_to_pub = row['Link to publication']
+                    zotero_link = row['Zotero link']
+                    name_x = row.get('Name_x', '')
+                    link_x = row.get('Link_x', '')
+                    name_y = row.get('Name_y', '')
+                    link_y = row.get('Link_y', '')
+                    name = row.get('Name', '')
+                    link = row.get('Link', '')
+                    abstract = row['Abstract']
+
+                    if publication_type in ["Journal article", "Magazine article", "Newspaper article"]:
+                        pub_info = f"**{publication_type}:** {title}, (by *{authors}*) (Published on: {date_published}) (Published in: *{pub_venue}*)" 
                     else:
-                        added_on = f"(Added on: {row['Date added']})"
-                        text = f"**{publication_type}**: {title} {authors} {published_on}, {added_on} {publication_link} {zotero_link}"
+                        pub_info = f"**{publication_type}:** {title}, (by *{authors}*) (Published on: {date_published}, Added on: {date_added})"
                     
-                    st.write(f"{i+1}) {text}")
-                    
+                    pub_info += f" [[Publication link]]({link_to_pub}) [[Zotero link]]({zotero_link})"
+
+                    st.write(f"{i+1}) {pub_info}")
+
                     if display:
-                        themes = [f"[{row[col]}]({row[f'Link_{col[-2:]}']})" for col in ['Name_x', 'Name_y', 'Name'] if col in df.columns and not pd.isna(row[col])]
-                        if themes:
-                            st.caption(f"Theme(s): {' '.join(themes)}")
-                        else:
+                        themes = []
+                        if name_x and link_x:
+                            themes.append(f"[{name_x}]({link_x})")
+                        if name_y and link_y:
+                            themes.append(f"[{name_y}]({link_y})")
+                        if name and link:
+                            themes.append(f"[{name}]({link})")
+                        if not themes:
                             st.caption('No theme to display!')
-                            
-                        st.caption(f"Abstract: {row['Abstract']}")
+                        else:
+                            st.caption('Theme(s):  \n ' + ' '.join(themes))
+                        st.caption('Abstract: '+ abstract)
+
 
         
 
