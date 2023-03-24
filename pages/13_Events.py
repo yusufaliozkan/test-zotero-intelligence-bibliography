@@ -179,6 +179,7 @@ with tab1:
 
     if sort_by == 'Date':
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        df_gs
         df_gs = df_gs.sort_values(by='date')
         for month in months:
             if month[:3] in df_gs['month'].unique():
