@@ -778,25 +778,25 @@ with st.spinner('Retrieving data & updating dashboard...'):
     )
 
     def decapitalize_titles(title):
-    # Split the title into words
-    words = title.split()
-    
-    # Capitalize the first word
-    words[0] = words[0].capitalize()
-    
-    # Decapitalize words except the first word
-    for i in range(1, len(words)):
-        if not words[i].istitle() and not words[i].isupper():
-            words[i] = words[i].lower()
-        elif words[i].istitle() and len(words[i]) > 1:
-            words[i] = words[i][0].lower() + words[i][1:]
-        elif words[i].isupper():
-            words[i] = words[i].lower()
-    
-    # Join the words back into a string
-    decapitalized_title = ' '.join(words)
-    
-    return decapitalized_title
+        # Split the title into words
+        words = title.split()
+        
+        # Capitalize the first word
+        words[0] = words[0].capitalize()
+        
+        # Decapitalize words except the first word
+        for i in range(1, len(words)):
+            if not words[i].istitle() and not words[i].isupper():
+                words[i] = words[i].lower()
+            elif words[i].istitle() and len(words[i]) > 1:
+                words[i] = words[i][0].lower() + words[i][1:]
+            elif words[i].isupper():
+                words[i] = words[i].lower()
+        
+        # Join the words back into a string
+        decapitalized_title = ' '.join(words)
+        
+        return decapitalized_title
 
 title = st.text_input("Enter a title:")
 if title:
