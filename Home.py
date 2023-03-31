@@ -799,21 +799,22 @@ with st.spinner('Retrieving data & updating dashboard...'):
         return decapitalized_title
 
 title = st.text_input("Enter a title:")
-st.button('Decapitalise title')
-if title:
-    decapitalized_title = decapitalize_titles(title)
-    st.write(f"**Decapitalized Title:** {decapitalized_title}")
+decapitalise = st.button('Decapitalise title')
+if decapitalise:
+    if title:
+        decapitalized_title = decapitalize_titles(title)
+        st.write(f"**Decapitalized Title:** {decapitalized_title}")
 
-    copy_dict = {"content": decapitalized_title}
-    copy_button = Button(label="Copy to clipboard")
-    copy_button.js_on_event("button_click", CustomJS(args=copy_dict, code="""
-        navigator.clipboard.writeText(content);
-        """))
+        copy_dict = {"content": decapitalized_title}
+        copy_button = Button(label="Copy to clipboard")
+        copy_button.js_on_event("button_click", CustomJS(args=copy_dict, code="""
+            navigator.clipboard.writeText(content);
+            """))
 
-    no_event = streamlit_bokeh_events(
-        copy_button,
-        events="GET_title",
-        key="get_title",
-        refresh_on_update=True,
-        override_height=75,
-        debounce_time=0)
+        no_event = streamlit_bokeh_events(
+            copy_button,
+            events="GET_title",
+            key="get_title",
+            refresh_on_update=True,
+            override_height=75,
+            debounce_time=0)
