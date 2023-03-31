@@ -799,6 +799,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
         return decapitalized_title
 
 title = st.text_input("Enter a title:")
+st.button('Decapitalise title')
 if title:
     decapitalized_title = decapitalize_titles(title)
     st.write(f"**Decapitalized Title:** {decapitalized_title}")
