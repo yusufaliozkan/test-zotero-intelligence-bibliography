@@ -775,4 +775,44 @@ with st.spinner('Retrieving data & updating dashboard...'):
     src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />
     © 2022 All rights reserved. This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
     """
-    )    
+    )
+
+    def decapitalize_titles(title):
+    # Split the title into words
+    words = title.split()
+    
+    # Capitalize the first word
+    words[0] = words[0].capitalize()
+    
+    # Decapitalize words except the first word
+    for i in range(1, len(words)):
+        if not words[i].istitle() and not words[i].isupper():
+            words[i] = words[i].lower()
+        elif words[i].istitle() and len(words[i]) > 1:
+            words[i] = words[i][0].lower() + words[i][1:]
+        elif words[i].isupper():
+            words[i] = words[i].lower()
+    
+    # Join the words back into a string
+    decapitalized_title = ' '.join(words)
+    
+    return decapitalized_title
+
+title = st.text_input("Enter a title:")
+if title:
+    decapitalized_title = decapitalize_titles(title)
+    st.write(f"**Decapitalized Title:** {decapitalized_title}")
+
+    copy_dict = {"content": decapitalized_title}
+    copy_button = Button(label="Copy to clipboard")
+    copy_button.js_on_event("button_click", CustomJS(args=copy_dict, code="""
+        navigator.clipboard.writeText(content);
+        """))
+
+    no_event = streamlit_bokeh_events(
+        copy_button,
+        events="GET_title",
+        key="get_title",
+        refresh_on_update=True,
+        override_height=75,
+        debounce_time=0)
