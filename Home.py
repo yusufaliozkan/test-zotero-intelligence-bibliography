@@ -121,7 +121,7 @@ def zotero_collections(library_id, library_type):
 df_collections = zotero_collections(library_id, library_type)
 
 # df['Col1Name'] = df['col1'].map(df_collections['Name'])
-
+df_collections
 df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
     df_collections, left_on=1, right_on='Key', how='left'
 ).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
