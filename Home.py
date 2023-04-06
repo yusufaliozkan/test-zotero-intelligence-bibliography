@@ -121,10 +121,20 @@ def zotero_collections(library_id, library_type):
 df_collections = zotero_collections(library_id, library_type)
 
 # df['Col1Name'] = df['col1'].map(df_collections['Name'])
-df_collections
-df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
-    df_collections, left_on=1, right_on='Key', how='left'
-).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
+# df_collections
+# df = df.merge(df_collections, left_on=0, right_on='Key', how='left').merge(
+#     df_collections, left_on=1, right_on='Key', how='left'
+# ).merge(df_collections, left_on=2, right_on='Key', how='left').fillna('')
+
+# Merge based on the first column
+df = df.merge(df_collections[['Key', 'Name']], left_on=0, right_on='Key', how='left').fillna('')
+
+# Merge based on the second column
+df = df.merge(df_collections[['Key', 'Name']], left_on=1, right_on='Key', how='left').fillna('')
+
+# Merge based on the third column, only if it has a non-empty value in df_collections
+df3 = df[[2]].drop_duplicates().merge(df_collections[['Key', 'Link']], left_on=2, right_on='Key', how='left').fillna('')
+df = df.merge(df3[['Key', 'Link']], left_on=2, right_on='Key', how='left')
 
 #To be deleted
 # if 0 in df:
