@@ -128,30 +128,35 @@ df_collections = zotero_collections(library_id, library_type)
 
 #To be deleted
 if 0 in df:
-    merged_df = pd.merge(
+    df = pd.merge(
         left=df,
-        right=df_collections,
+        right=df_collections[['Key', 'Name']],
         left_on=0,
         right_on='Key',
         how='left'
-    )
-    if 1 in merged_df:
-        merged_df = pd.merge(
-            left=merged_df,
-            right=df_collections,
-            left_on=1,
-            right_on='Key',
-            how='left'
-        )
-        if 2 in merged_df:
-            merged_df = pd.merge(
-                left=merged_df,
-                right=df_collections,
-                left_on=2,
-                right_on='Key',
-                how='left'
-            ) 
-df = merged_df.copy()
+    ).fillna('')
+if 1 in df:
+    df = pd.merge(
+        left=df,
+        right=df_collections[['Key', 'Name']],
+        left_on=1,
+        right_on='Key',
+        how='left'
+    ).fillna('')
+if 2 in df:
+    df3 = df[[2]].drop_duplicates().merge(
+        df_collections[['Key', 'Link']],
+        left_on=2,
+        right_on='Key',
+        how='left'
+    ).fillna('')
+    df = pd.merge(
+        left=df,
+        right=df3[['Key', 'Link']],
+        left_on=2,
+        right_on='Key',
+        how='left'
+    ).fillna('')
 #To be deleted
 df
 df = df.fillna('')
