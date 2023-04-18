@@ -152,7 +152,7 @@ with tab1:
         df['Journal'] = df['Journal'].replace(['Intelligence and national security', 'Intelligence and National Security', 'Intelligence & National Security'], 'Intelligence and National Security')
 
         df['Date published'] = pd.to_datetime(df['Date published'],utc=True, errors='coerce').dt.tz_convert('Europe/London')
-        df['Date published'] = df['Date published'].dt.strftime('%d-%m-%Y')
+        df['Date published'] = df['Date published'].dt.strftime('%Y-%m-%d')
         df['Date published'] = df['Date published'].fillna('No date')
         df
         
