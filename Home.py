@@ -47,27 +47,22 @@ def zotero_data(library_id, library_type):
     items = zot.top(limit=15)
 
     data=[]
-    columns = ['Title','Publication type', 'Book title', 'Link to publication', 'Abstract', 'Zotero link', 'Date added', 'Date published', 'Date modified', 'Col key', 'Authors', 'Pub_venue']
-    
-    book_titles = []
+    columns = ['Title','Publication type', 'Link to publication', 'Abstract', 'Zotero link', 'Date added', 'Date published', 'Date modified', 'Col key', 'Authors', 'Pub_venue']
+
     for item in items:
         creators = item['data']['creators']
         creators_str = ", ".join([creator.get('firstName', '') + ' ' + creator.get('lastName', '') for creator in creators])
-        if item['data']['itemType'] == 'bookSection':
-            book_titles.append(item.get('bookTitle'))
-        data.append((
-            item['data']['title'],
-            item['data']['itemType'], 
-            book_titles[-1] if book_titles else None, 
-            item['data']['url'], 
-            item['data']['abstractNote'], 
-            item['links']['alternate']['href'],
-            item['data']['dateAdded'],
-            item['data'].get('date'), 
-            item['data']['dateModified'],
-            item['data']['collections'],
-            creators_str,
-            item['data'].get('publicationTitle')
+        data.append((item['data']['title'], 
+        item['data']['itemType'], 
+        item['data']['url'], 
+        item['data']['abstractNote'], 
+        item['links']['alternate']['href'],
+        item['data']['dateAdded'],
+        item['data'].get('date'), 
+        item['data']['dateModified'],
+        item['data']['collections'],
+        creators_str,
+        item['data'].get('publicationTitle')
         ))
     df = pd.DataFrame(data, columns=columns)
     return df
