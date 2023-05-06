@@ -44,7 +44,7 @@ def zotero_data(library_id, library_type):
     items = zot.top(limit=15)
 
     data=[]
-    columns = ['Title','Publication type', 'Link to publication', 'Abstract', 'Zotero link', 'Date added', 'Date published', 'Date modified', 'Col key', 'Authors', 'Pub_venue']
+    columns = ['Title','Publication type', 'Book title', 'Link to publication', 'Abstract', 'Zotero link', 'Date added', 'Date published', 'Date modified', 'Col key', 'Authors', 'Pub_venue']
 
     for item in items:
         creators = item['data']['creators']
