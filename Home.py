@@ -48,14 +48,16 @@ def zotero_data(library_id, library_type):
 
     data=[]
     columns = ['Title','Publication type', 'Book title', 'Link to publication', 'Abstract', 'Zotero link', 'Date added', 'Date published', 'Date modified', 'Col key', 'Authors', 'Pub_venue']
-
+    
+    book_titles = []
     for item in items:
         creators = item['data']['creators']
         creators_str = ", ".join([creator.get('firstName', '') + ' ' + creator.get('lastName', '') for creator in creators])
+        if item['data']['itemType'] == 'bookSection':
+            book_titles.append(item.get('bookTitle'))
         data.append((item['data']['title'],
-        item['data']['itemType'],
-        book_titles = item.get('bookTitle') if item['data']['itemType'] == 'bookSection' else None
-        book_titles,
+        item['data']['itemType'], 
+        book_titles[-1] if book_titles else None, 
         item['data']['url'], 
         item['data']['abstractNote'], 
         item['links']['alternate']['href'],
