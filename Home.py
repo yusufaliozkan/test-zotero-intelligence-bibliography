@@ -51,12 +51,13 @@ def zotero_data(library_id, library_type):
     
     book_titles = []
     for item in items:
-        data.append((item['data']['title'],
+        data.append((
+        item['data']['title'],
+        item['data']['itemType'], 
         creators = item['data']['creators']
         creators_str = ", ".join([creator.get('firstName', '') + ' ' + creator.get('lastName', '') for creator in creators])
         if item['data']['itemType'] == 'bookSection':
             book_titles.append(item.get('bookTitle'))
-        item['data']['itemType'], 
         book_titles[-1] if book_titles else None, 
         item['data']['url'], 
         item['data']['abstractNote'], 
