@@ -143,7 +143,7 @@ with tab1:
         
     st.write('See [📊 Event visuals](#event-visuals)')
 
-
+    df_gs
     filter = (df_gs['date']>=today)
     filter2 = (df_gs['date']<today)
     df_gs2 = df_gs.loc[filter2]
