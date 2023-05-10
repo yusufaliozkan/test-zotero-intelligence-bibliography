@@ -67,6 +67,7 @@ with st.sidebar:
 today = dt.date.today()
 today2 = dt.date.today().strftime('%d/%m/%Y')
 st.write('Today is: '+ str(today2))
+container = st.container()
 
 # Create a connection object.
 conn = connect()
@@ -125,7 +126,7 @@ with tab1:
     df_forms2 = pd.DataFrame(data2, columns=columns2)
     df_forms2['date_new'] = pd.to_datetime(df_forms2['timestamp'], dayfirst = True).dt.strftime('%d/%m/%Y - %H:%M')
     df_forms2 = df_forms2.sort_index(ascending=False)
-    timestamp = st.write('The library last updated on ' + '**'+ df_forms2.loc[0]['date_new']+'**')
+    container.write('The library last updated on ' + '**'+ df_forms2.loc[0]['date_new']+'**')
 
     df_forms['date_new'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%d/%m/%Y')
     df_forms['month'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%m')
