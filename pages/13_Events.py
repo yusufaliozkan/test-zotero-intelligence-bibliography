@@ -122,7 +122,7 @@ with tab1:
     for row in rows:
         data2.append((row.Timestamp))
     pd.set_option('display.max_colwidth', None)
-    df_forms2 = pd.DataFrame(data2, columns=columns)
+    df_forms2 = pd.DataFrame(data2, columns=columns2)
     df_forms2
 
     df_forms['date_new'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%d/%m/%Y')
