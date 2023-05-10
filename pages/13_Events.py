@@ -122,6 +122,7 @@ with tab1:
     df_forms['month_year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y-%m')
     df_forms.sort_values(by='date', ascending = True, inplace=True)
     df_forms = df_forms.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
+    df_forms
     
     df_forms['details'] = df_forms['details'].fillna('No details')
     df_forms = df_forms.fillna('')
