@@ -148,6 +148,7 @@ with tab1:
     filter2 = (df_gs['date']<today)
     df_gs2 = df_gs.loc[filter2]
     df_gs = df_gs.loc[filter]
+    df_gs
     if df_gs['event_name'].any() in ("", [], None, 0, False):
         st.write('No upcoming event!')
 
