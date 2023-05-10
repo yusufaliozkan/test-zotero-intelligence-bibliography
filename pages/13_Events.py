@@ -125,6 +125,7 @@ with tab1:
     
     df_forms['details'] = df_forms['details'].fillna('No details')
     df_forms = df_forms.fillna('')
+    df_forms
     df_gs = pd.concat([df_gs, df_forms], axis=0)
     df_gs = df_gs.reset_index(drop=True)
     df_gs = df_gs.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
@@ -143,17 +144,14 @@ with tab1:
         
     st.write('See [📊 Event visuals](#event-visuals)')
 
-    df_gs
     filter = (df_gs['date']>=today)
     filter2 = (df_gs['date']<today)
     df_gs2 = df_gs.loc[filter2]
     df_gs = df_gs.loc[filter]
-    df_gs
     if df_gs['event_name'].any() in ("", [], None, 0, False):
         st.write('No upcoming event!')
 
     if sort_by == 'Most recently added':
-        df_gs
         df_gs = df_gs.sort_index(ascending=False)
         df_last = ('['+ df_gs['event_name'] + ']'+ '('+ df_gs['link'] + ')'', organised by ' + '**' + df_gs['organiser'] + '**' + '. Date: ' + df_gs['date_new'] + ', Venue: ' + df_gs['venue'])
         row_nu = len(df_gs.index)
