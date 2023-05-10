@@ -125,7 +125,6 @@ with tab1:
     df_forms2 = pd.DataFrame(data2, columns=columns2)
     df_forms2['date_new'] = pd.to_datetime(df_forms2['timestamp'], dayfirst = True).dt.strftime('%d/%m/%Y - %H:%M')
     df_forms2 = df_forms2.sort_index(ascending=False)
-    df_forms2
     timestamp = st.write('The library last updated on ' + '**'+ df_forms2.loc[0]['date_new']+'**')
 
     df_forms['date_new'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%d/%m/%Y')
@@ -134,7 +133,7 @@ with tab1:
     df_forms['month_year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y-%m')
     df_forms.sort_values(by='date', ascending = True, inplace=True)
     df_forms = df_forms.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
-    df_forms
+    
     
     df_forms['details'] = df_forms['details'].fillna('No details')
     df_forms = df_forms.fillna('')
@@ -162,6 +161,7 @@ with tab1:
     filter2 = (df_gs['date']<today)
     df_gs2 = df_gs.loc[filter2]
     df_gs = df_gs.loc[filter]
+
     if df_gs['event_name'].any() in ("", [], None, 0, False):
         st.write('No upcoming event!')
 
