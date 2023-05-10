@@ -116,6 +116,15 @@ with tab1:
     pd.set_option('display.max_colwidth', None)
     df_forms = pd.DataFrame(data, columns=columns)
 
+    data2 = []
+    columns2 = ['timestamp']
+    # Print results.
+    for row in rows:
+        data2.append((row.Timestamp))
+    pd.set_option('display.max_colwidth', None)
+    df_forms2 = pd.DataFrame(data2, columns=columns)
+    df_forms2
+
     df_forms['date_new'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%d/%m/%Y')
     df_forms['month'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%m')
     df_forms['year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y')
