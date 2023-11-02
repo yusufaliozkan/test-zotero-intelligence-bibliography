@@ -66,15 +66,20 @@ def zotero_data(library_id, library_type):
     return df
 
 df_new = pd.read_csv('database.csv')
-unique_articles = df_new["Zotero link"].unique()
 df_new
 
-for article_title in unique_articles:
-    st.subheader(f'Title: {article_title}')
-    authors = df_new.loc[df_new['Title'] == article_title, 'Authors'].unique()
-    st.write(f"Authors: {', '.join(authors)}")
-    collection_names = df_new.loc[df_new['Title']== article_title, "Collection_name"].unique()
-    st.write(f"Collection Names: {', '.join(collection_names)}")
+for index, row in data.iterrows():
+    st.subheader(f"Journal article: {row['Title']} (by {row['Authors']}) (Published on: {row['Date published']}) (Published in: {row['Journal']})")
+    st.write(f"[Publication link]({row['Link to publication']}) [{row['Zotero link']}]")
+
+    # Display themes
+    themes = row['Author'].split(', ')
+    theme_links = row['Collection_link'].split(', ')
+    for i in range(len(themes)):
+        st.write(f"Theme(s): [{themes[i]}] ({theme_links[i]})")
+
+    # Display abstract
+    st.write(f"Abstract: {row['Abstract']}")
 
 df = zotero_data(library_id, library_type)
 
