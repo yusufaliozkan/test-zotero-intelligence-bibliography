@@ -67,7 +67,7 @@ def zotero_data(library_id, library_type):
 
 df_new = pd.read_csv('database.csv')
 unique_articles = df_new["Zotero link"].unique()
-unique_articles
+df_new
 
 for article_title in unique_articles:
     st.subheader(f'Title: {article_title}')
