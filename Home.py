@@ -82,7 +82,7 @@ for index, row in grouped_data.iterrows():
 
     # Display all Collection_names
     for i, collection_name in enumerate(row['Collection_name']):
-        st.write(f"Theme(s): [{collection_name}] ({data[data['Collection_name'] == collection_name]['Collection_link'].values[0]})")
+        st.write(f"Theme(s): [{collection_name}] ({df_new[df_new['Collection_name'] == collection_name]['Collection_link'].values[0]})")
 
 
 df = zotero_data(library_id, library_type)
