@@ -66,7 +66,9 @@ def zotero_data(library_id, library_type):
     return df
 
 df_new = pd.read_csv('database.csv')
-df_new
+for index, row in df_new.iterrows():
+    st.header(f'Title: {row['Title']}')
+    st.write(f"Authors: {row['Authors']}")
 
 df = zotero_data(library_id, library_type)
 
