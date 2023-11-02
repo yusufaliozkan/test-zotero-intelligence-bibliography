@@ -71,7 +71,7 @@ unique_articles = df_new["Zotero link"].unique()
 for article_title in unique_articles:
     st.subheader(f'Title: {article_title}')
     authors = df.loc[df['Title'] == article_title, 'Authors'].unique()
-    st.write(f'Authors: {', '.join(authors)}')
+    st.write(f"Authors: {', '.join(authors)}")
     collection_names = df.loc[df['Title']== article_title, "Collection_name"].unique()
     st.write(f"Collection Names: {', '.join(collection_names)}")
 
