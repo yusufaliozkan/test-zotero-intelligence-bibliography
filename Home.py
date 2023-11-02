@@ -68,18 +68,22 @@ def zotero_data(library_id, library_type):
 df_new = pd.read_csv('database.csv')
 df_new
 
-for index, row in df_new.iterrows():
-    st.subheader(f"Journal article: {row['Title']} (by {row['Authors']}) (Published on: {row['Date published']}) (Published in: {row['Journal']})")
+grouped_data = df_new.groupby('Title').agg({
+    'Authors': 'first',
+    'Date published': 'first',
+    'Journal': 'first',
+    'Link to publication': 'first',
+    'Zotero link': 'first',
+    'Collection_name': list
+}).reset_index()
+for index, row in grouped_data.iterrows():
+    st.subheader(f"Journal article: {row['Title']} (by {row['Authors']}) (Published on: {row['Date published']}) (Published in: {row['Journal']}")
     st.write(f"[Publication link]({row['Link to publication']}) [{row['Zotero link']}]")
 
-    # Display themes
-    themes = row['Author'].split(', ')
-    theme_links = row['Collection_link'].split(', ')
-    for i in range(len(themes)):
-        st.write(f"Theme(s): [{themes[i]}] ({theme_links[i]})")
+    # Display all Collection_names
+    for i, collection_name in enumerate(row['Collection_name']):
+        st.write(f"Theme(s): [{collection_name}] ({data[data['Collection_name'] == collection_name]['Collection_link'].values[0]})")
 
-    # Display abstract
-    st.write(f"Abstract: {row['Abstract']}")
 
 df = zotero_data(library_id, library_type)
 
