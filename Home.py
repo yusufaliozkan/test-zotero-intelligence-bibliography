@@ -65,6 +65,8 @@ def zotero_data(library_id, library_type):
     df = pd.DataFrame(data, columns=columns)
     return df
 
+df_new = pd.read_csv('database.csv')
+df_new
 
 df = zotero_data(library_id, library_type)
 
