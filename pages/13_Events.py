@@ -17,22 +17,23 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 from wordcloud import WordCloud
 from gsheetsdb import connect
-import datetime as dt     
-
+import datetime as dt
+from urllib.parse import urlparse
 
 st.set_page_config(layout = "centered", 
-                    page_title='Intelligence bibliography',
+                    page_title='Intelligence studies network',
                     page_icon="https://images.pexels.com/photos/315918/pexels-photo-315918.png",
                     initial_sidebar_state="auto") 
 
-st.title("Events on intelligence")
+st.title("Intelligence studies network")
+st.header("Events on intelligence")
 image = 'https://images.pexels.com/photos/315918/pexels-photo-315918.png'
 
 
 with st.sidebar:
 
     st.image(image, width=150)
-    st.sidebar.markdown("# Intelligence bibliography")
+    st.sidebar.markdown("# Intelligence studies network")
     with st.expander('About'):
         st.write('''This website lists secondary sources on intelligence studies and intelligence history.
         The sources are originally listed in the [Intelligence bibliography Zotero library](https://www.zotero.org/groups/2514686/intelligence_bibliography).
@@ -66,6 +67,7 @@ with st.sidebar:
 today = dt.date.today()
 today2 = dt.date.today().strftime('%d/%m/%Y')
 st.write('Today is: '+ str(today2))
+container = st.container()
 
 # Create a connection object.
 conn = connect()
@@ -104,6 +106,44 @@ with tab1:
     df_gs['details'] = df_gs['details'].fillna('No details')
     df_gs = df_gs.fillna('')
     df_gs_plot = df_gs.copy()
+
+    sheet_url_forms = st.secrets["public_gsheets_url_forms"]
+    rows = run_query(f'SELECT * FROM "{sheet_url_forms}"')
+    data = []
+    columns = ['event_name', 'organiser', 'link', 'date', 'venue', 'details']
+    # Print results.
+    for row in rows:
+        data.append((row.Event_name, row.Event_organiser, row.Link_to_the_event, row.Date_of_event, row.Event_venue, row.Details))
+    pd.set_option('display.max_colwidth', None)
+    df_forms = pd.DataFrame(data, columns=columns)
+
+    data2 = []
+    columns2 = ['timestamp']
+    # Print results.
+    for row in rows:
+        data2.append((row.Timestamp))
+    pd.set_option('display.max_colwidth', None)
+    df_forms2 = pd.DataFrame(data2, columns=columns2)
+    df_forms2['date_new'] = pd.to_datetime(df_forms2['timestamp'], dayfirst = True).dt.strftime('%d/%m/%Y - %H:%M')
+    df_forms2 = df_forms2.sort_index(ascending=False)
+    df_forms2 = df_forms2.reset_index(drop=True)
+    container.write('The library last updated on ' + '**'+ df_forms2.loc[0]['date_new']+'**')
+
+    df_forms['date_new'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%d/%m/%Y')
+    df_forms['month'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%m')
+    df_forms['year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y')
+    df_forms['month_year'] = pd.to_datetime(df_forms['date'], dayfirst = True).dt.strftime('%Y-%m')
+    df_forms.sort_values(by='date', ascending = True, inplace=True)
+    df_forms = df_forms.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
+    
+    
+    df_forms['details'] = df_forms['details'].fillna('No details')
+    df_forms = df_forms.fillna('')
+    df_forms = df_forms.sort_index(ascending=True)
+
+    df_gs = pd.concat([df_gs, df_forms], axis=0)
+    df_gs = df_gs.reset_index(drop=True)
+    df_gs = df_gs.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
     
     col1, col2 = st.columns(2)
 
@@ -119,11 +159,11 @@ with tab1:
         
     st.write('See [📊 Event visuals](#event-visuals)')
 
-
     filter = (df_gs['date']>=today)
     filter2 = (df_gs['date']<today)
     df_gs2 = df_gs.loc[filter2]
     df_gs = df_gs.loc[filter]
+
     if df_gs['event_name'].any() in ("", [], None, 0, False):
         st.write('No upcoming event!')
 
@@ -154,152 +194,46 @@ with tab1:
                     st.caption('Details:'+'\n '+ df_o['details'].iloc[j])
 
     if sort_by == 'Date':
+        month_dict = {'01': 'January',
+            '02': 'February',
+            '03': 'March',
+            '04': 'April',
+            '05': 'May',
+            '06': 'June',
+            '07': 'July',
+            '08': 'August',
+            '09': 'September',
+            '10': 'October',
+            '11': 'November',
+            '12': 'December'}
+        for month_num, month_name in month_dict.items():
+            if month_num in df_gs['month'].values:
+                st.markdown(f'#### Events in {month_name}')
+                mon = df_gs[df_gs['month']==month_num] 
+                df_mon = mon[['event_name', 'link', 'organiser', 'date_new', 'venue', 'details']]
+                row_nu = len(df_mon.index)
+                for i in range(row_nu):
+                    st.write(f"{i+1}) [{df_mon.iloc[i]['event_name']}]({df_mon.iloc[i]['link']}) organised by **{df_mon.iloc[i]['organiser']}**. Date: {df_mon.iloc[i]['date_new']}, Venue: {df_mon.iloc[i]['venue']}")
+                    if display:
+                        st.caption(f"Details:\n{df_mon.iloc[i]['details']}")
 
-        if '01' in df_gs['month'].values:
-            st.markdown('#### Events in January')
-            mon = df_gs[df_gs['month']=='01']
-            # mon = mon.sort_index(ascending=False)
-            # mon
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
 
-        if '02' in df_gs['month'].values:
-            st.markdown('#### Events in February')
-            mon = df_gs[df_gs['month']=='02']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
 
-        if '03' in df_gs['month'].values:
-            st.markdown('#### Events in March')
-            mon = df_gs[df_gs['month']=='03']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '04' in df_gs['month'].values:
-            st.markdown('#### Events in April')
-            mon = df_gs[df_gs['month']=='04']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '05' in df_gs['month'].values:
-            st.markdown('#### Events in May')
-            mon = df_gs[df_gs['month']=='05']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '06' in df_gs['month'].values:
-            st.markdown('#### Events in June')
-            mon = df_gs[df_gs['month']=='06']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '07' in df_gs['month'].values:
-            st.markdown('#### Events in July')
-            mon = df_gs[df_gs['month']=='07']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '08' in df_gs['month'].values:
-            st.markdown('#### Events in August')
-            mon = df_gs[df_gs['month']=='08']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '09' in df_gs['month'].values:
-            st.markdown('#### Events in September')
-            mon = df_gs[df_gs['month']=='09']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '10' in df_gs['month'].values:
-            st.markdown('#### Events in October')
-            mon = df_gs[df_gs['month']=='10']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '11' in df_gs['month'].values:
-            st.markdown('#### Events in November')
-            mon = df_gs[df_gs['month']=='11']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
-
-        if '12' in df_gs['month'].values:
-            st.markdown('#### Events in December')
-            mon = df_gs[df_gs['month']=='12']
-            df_gs1 = ('['+ mon['event_name'] + ']'+ '('+ mon['link'] + ')'', organised by ' + '**' + mon['organiser'] + '**' + '. Date: ' + mon['date_new'] + ', Venue: ' + mon['venue'])
-            row_nu = len(mon.index)
-            for i in range(row_nu):
-                st.write(''+str(i+1)+') '+ df_gs1.iloc[i])
-                if display:
-                    st.caption('Details:'+'\n '+ mon['details'].iloc[i])
 
     st.header('Past events')
     with st.expander('Expand to see the list'):
-        if st.checkbox('Events in 2023', key='2023'):            
-            if '2023' in df_gs2['year'].values:
-                y2023 = df_gs2[df_gs2['year']=='2023']
-                y2023['link'] = y2023['link'].fillna('')
-                row_nu2 = len(y2023.index)
-                df_gs3 = ('['+ y2023['event_name'] + ']'+ '('+ y2023['link'] + ')'', organised by ' + '**' + y2023['organiser'] + '**' + '. Date: ' + y2023['date_new'] + ', Venue: ' + y2023['venue'])
-                row_nu = len(df_gs.index)
-                st.write(str(row_nu2) + ' events happened in 2023')
-                for i in range(row_nu2):
-                    st.write(''+str(i+1)+') '+ df_gs3.iloc[i])
-        if st.checkbox('Events in 2022', key='2022'):
-            if '2022' in df_gs2['year'].values:
-                y2022 = df_gs2[df_gs2['year']=='2022']
-                y2022['link'] = y2022['link'].fillna('')
-                y2022 = y2022.drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
-                row_nu2 = len(y2022.index)
-                df_gs3 = ('['+ y2022['event_name'] + ']'+ '('+ y2022['link'] + ')'', organised by ' + '**' + y2022['organiser'] + '**' + '. Date: ' + y2022['date_new'] + ', Venue: ' + y2022['venue'])
-                row_nu = len(df_gs.index)
-                st.write(str(row_nu2) + ' events happened in 2022')
-                for i in range(row_nu2):
-                    st.write(''+str(i+1)+') '+ df_gs3.iloc[i])
+        years = df_gs2['year'].unique()[::-1]
+        for year in years:
+            if st.checkbox(f"Events in {year}", key=year):
+                if year in df_gs2['year'].values:
+                    events = df_gs2[df_gs2['year']==year].drop_duplicates(subset=['event_name', 'link', 'date'], keep='first')
+                    events['link'] = events['link'].fillna('')
+                    num_events = len(events.index)
+                    event_strs = ('['+ events['event_name'] + ']'+ '('+ events['link'] + ')'', organised by ' + '**' + events['organiser'] + '**' + '. Date: ' + events['date_new'] + ', Venue: ' + events['venue'])
+                    st.write(f"{num_events} events happened in {year}")
+                    for i, event_str in enumerate(event_strs):
+                        st.write(f"{i+1}) {event_str}")
+
     
     st.header('Event visuals')
     ap = ''
@@ -366,6 +300,7 @@ with tab1:
         organiser_plot_all=organiser_plot_all.sort_values('Organiser', ascending=True)
         for i in range(row_nu_organiser):
             st.caption(organiser_plot_all['Organiser'].iloc[i])
+
 
 with tab2:
     st.subheader('Conferences')
