@@ -68,7 +68,7 @@ def zotero_data(library_id, library_type):
 df_new = pd.read_csv('database.csv')
 df_new
 
-for index, row in data.iterrows():
+for index, row in df_new.iterrows():
     st.subheader(f"Journal article: {row['Title']} (by {row['Authors']}) (Published on: {row['Date published']}) (Published in: {row['Journal']})")
     st.write(f"[Publication link]({row['Link to publication']}) [{row['Zotero link']}]")
 
