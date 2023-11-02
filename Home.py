@@ -22,8 +22,7 @@ from gsheetsdb import connect
 import gsheetsdb as gdb
 import datetime as dt
 import time
-import PIL
-from PIL import Image, ImageDraw, ImageFilter
+
 
 # Connecting Zotero with API
 library_id = '2514686'
@@ -39,6 +38,9 @@ st.set_page_config(layout = "wide",
 pd.set_option('display.max_colwidth', None)
 
 zot = zotero.Zotero(library_id, library_type)
+items = zot.top(limit=15)
+items 
+
 
 @st.cache_data(ttl=600)
 def zotero_data(library_id, library_type):
@@ -65,6 +67,7 @@ def zotero_data(library_id, library_type):
     df = pd.DataFrame(data, columns=columns)
     return df
 
+
 df = zotero_data(library_id, library_type)
 
 df['Abstract'] = df['Abstract'].replace(r'^\s*$', np.nan, regex=True) # To replace '' with NaN. Otherwise the code below do not understand the value is nan.
@@ -87,8 +90,7 @@ type_map = {
     'webpage': 'Webpage',
     'newspaperArticle': 'Newspaper article',
     'report': 'Report',
-    'forumPost': 'Forum post',
-    'conferencePaper' : 'Conference paper'
+    'forumPost': 'Forum post'
 }
 df['Publication type'] = df['Publication type'].replace(type_map)
 
@@ -149,7 +151,7 @@ if 0 in df:
             ) 
 df = merged_df.copy()
 #To be deleted
-
+df
 df = df.fillna('')
 
 # Streamlit app
@@ -165,6 +167,7 @@ The current page shows the recently added or updated items.
 **If you wish to see more sources under different themes, see the sidebar menu** :arrow_left: .
 The website has also a dynamic [digest](https://intelligence.streamlit.app/Digest) that you can tract latest publications & events.
 Check it out the [short guide](https://medium.com/@yaliozkan/introduction-to-intelligence-studies-network-ed63461d1353) for a quick intoduction.'''
+
 
 with st.spinner('Retrieving data & updating dashboard...'):
 
@@ -232,7 +235,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
             today = datetime.date.today().isoformat()
             a = 'intelligence-bibliography-' + today
             st.download_button('💾 Download recently added items', csv, (a+'.csv'), mime="text/csv", key='download-csv')
-            
+
             with st.expander('Click to hide the list', expanded=True):
                 display = st.checkbox('Display theme and abstract')
 
@@ -243,7 +246,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
                             '[[Publication link]]'+ '('+ df['Link to publication'] + ')' +
                             "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
                             )
-                
+
                 row_nu_1 = len(df_last.index)
                 for i in range(row_nu_1):
                     publication_type = df['Publication type'].iloc[i]
@@ -265,24 +268,21 @@ with st.spinner('Retrieving data & updating dashboard...'):
                                     "[[Zotero link]]" +'('+ df['Zotero link'] + ')' 
                                     )
                         st.write(f"{i+1}) " + df_last.iloc[i])
-                    
                     if display:
                         a=''
                         b=''
                         c=''
                         if 'Name_x' in df:
                             a= '['+'['+df['Name_x'].iloc[i]+']' +'('+ df['Link_x'].iloc[i] + ')'+ ']'
-                            if df['Name_x'].iloc[i]=='':
-                                a=''
-                        if 'Name_y' in df:
-                            b='['+'['+df['Name_y'].iloc[i]+']' +'('+ df['Link_y'].iloc[i] + ')' +']'
-                            if df['Name_y'].iloc[i]=='':
-                                b=''
-                        if 'Name' in df:
-                            c= '['+'['+df['Name'].iloc[i]+']' +'('+ df['Link'].iloc[i] + ')'+ ']'
-                            if df['Name'].iloc[i]=='':
-                                c=''
-                        if not any([a, b, c]):
+                            if 'Name_y' in df:
+                                b='['+'['+df['Name_y'].iloc[i]+']' +'('+ df['Link_y'].iloc[i] + ')' +']'
+                                if df['Name_y'].iloc[i]=='':
+                                    b=''
+                                if 'Name' in df:
+                                    c= '['+'['+df['Name'].iloc[i]+']' +'('+ df['Link'].iloc[i] + ')'+ ']'
+                                    if df['Name'].iloc[i]=='':
+                                        c=''
+                        else:
                             st.caption('No theme to display!')
                         st.caption('Theme(s):  \n ' + a + ' ' +b+ ' ' + c)
                         st.caption('Abstract: '+ df['Abstract'].iloc[i])
@@ -314,7 +314,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
 
                 # Perform SQL query on the Google Sheet.
                 # Uses st.cache to only rerun when the query changes or after 10 min.
-                @st.cache_resource(ttl=10)
+                @st.cache(ttl=10)
                 def run_query(query):
                     rows = conn.execute(query, headers=1)
                     rows = rows.fetchall()
@@ -645,26 +645,6 @@ with st.spinner('Retrieving data & updating dashboard...'):
             st.markdown('##### Top 15 country names mentioned in titles')
             fig = px.bar(df_countries.head(15), x='Count', y='Country', orientation='h', height=600)
             col2.plotly_chart(fig, use_container_width=True)
-        
-        st.write('---')
-        st.subheader('Named Entity Recognition analysis')
-        st.caption('[What is Named Entity Recognition?](https://medium.com/mysuperai/what-is-named-entity-recognition-ner-and-how-can-i-use-it-2b68cf6f545d)')
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            gpe_counts = pd.read_csv('gpe.csv')
-            fig = px.bar(gpe_counts.head(15), x='GPE', y='count', height=600, title="Top 15 locations mentioned in title & abstract")
-            fig.update_xaxes(tickangle=-65)
-            col1.plotly_chart(fig, use_container_width=True)
-        with col2:
-            person_counts = pd.read_csv('person.csv')
-            fig = px.bar(person_counts.head(15), x='PERSON', y='count', height=600, title="Top 15 person mentioned in title & abstract")
-            fig.update_xaxes(tickangle=-65)
-            col2.plotly_chart(fig, use_container_width=True)
-        with col3:
-            org_counts = pd.read_csv('org.csv')
-            fig = px.bar(org_counts.head(15), x='ORG', y='count', height=600, title="Top 15 organisations mentioned in title & abstract")
-            fig.update_xaxes(tickangle=-65)
-            col3.plotly_chart(fig, use_container_width=True)
 
         st.write('---')
         df=df_csv.copy()
@@ -712,7 +692,7 @@ with st.spinner('Retrieving data & updating dashboard...'):
         listdf = df['lemma_title']
         listdf_abstract = df['lemma_abstract']
 
-        st.subheader('Wordcloud')
+        st.markdown('## Wordcloud')
         wordcloud_opt = st.radio('Wordcloud of:', ('Titles', 'Abstracts'))
         if wordcloud_opt=='Titles':
             df_list = [item for sublist in listdf for item in sublist]
@@ -744,38 +724,38 @@ with st.spinner('Retrieving data & updating dashboard...'):
             st.set_option('deprecation.showPyplotGlobalUse', False)
             st.pyplot() 
 
-        # Bring everything in the library
-        types = zot.everything(zot.top())
+        ## Bring everything in the library
+        # types = zot.everything(zot.top())
 
-        data_t=[]
-        columns_t = ['Publication type']
+        # data_t=[]
+        # columns_t = ['Publication type']
 
-        for item in types:
-            data_t.append((item['data']['itemType']))
+        # for item in types:
+        #     data_t.append((item['data']['itemType']))
 
-        pd.set_option('display.max_colwidth', None)
-        df_t = pd.DataFrame(data_t, columns=columns_t)
+        # pd.set_option('display.max_colwidth', None)
+        # df_t = pd.DataFrame(data_t, columns=columns_t)
 
-        df_t['Publication type'] = df_t['Publication type'].replace(['thesis'], 'Thesis')
-        df_t['Publication type'] = df_t['Publication type'].replace(['journalArticle'], 'Journal article')
-        df_t['Publication type'] = df_t['Publication type'].replace(['book'], 'Book')
-        df_t['Publication type'] = df_t['Publication type'].replace(['bookSection'], 'Book chapter')
-        df_t['Publication type'] = df_t['Publication type'].replace(['blogPost'], 'Blog post')
-        df_t['Publication type'] = df_t['Publication type'].replace(['videoRecording'], 'Video')
-        df_t['Publication type'] = df_t['Publication type'].replace(['podcast'], 'Podcast')
-        df_t['Publication type'] = df_t['Publication type'].replace(['magazineArticle'], 'Magazine article')
-        df_t['Publication type'] = df_t['Publication type'].replace(['webpage'], 'Webpage')
-        df_t['Publication type'] = df_t['Publication type'].replace(['newspaperArticle'], 'Newspaper article')
-        df_t['Publication type'] = df_t['Publication type'].replace(['report'], 'Report')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['thesis'], 'Thesis')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['journalArticle'], 'Journal article')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['book'], 'Book')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['bookSection'], 'Book chapter')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['blogPost'], 'Blog post')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['videoRecording'], 'Video')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['podcast'], 'Podcast')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['magazineArticle'], 'Magazine article')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['webpage'], 'Webpage')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['newspaperArticle'], 'Newspaper article')
+        # df_t['Publication type'] = df_t['Publication type'].replace(['report'], 'Report')
 
 
-        df_types = pd.DataFrame(df_t['Publication type'].value_counts())
+        # df_types = pd.DataFrame(df_t['Publication type'].value_counts())
 
-        st.header('Items in the library by type: ')
-        df_types = df_types.sort_values(['Publication type'], ascending=[False])
-        plot2= df_types.head(10)
+        # st.header('Items in the library by type: ')
+        # df_types = df_types.sort_values(['Publication type'], ascending=[False])
+        # plot2= df_types.head(10)
 
-        st.bar_chart(plot2['Publication type'].sort_values(), height=600, width=600, use_container_width=True)
+        # st.bar_chart(plot2['Publication type'].sort_values(), height=600, width=600, use_container_width=True)
 
 
 
@@ -793,4 +773,4 @@ with st.spinner('Retrieving data & updating dashboard...'):
     src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />
     © 2022 All rights reserved. This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
     """
-    )    
+    )
