@@ -177,6 +177,9 @@ df = df.fillna('')
 
 st.title("Intelligence studies network", anchor=False)
 st.header('Intelligence studies bibliography', anchor=False)
+with st.popover("Open popover"):
+    st.markdown("Hello World 👋")
+    name = st.text_input("What's your name?")
 # st.header("[Zotero group library](https://www.zotero.org/groups/2514686/intelligence_bibliography/library)")
 
 # cite_today = datetime.date.today().isoformat()
