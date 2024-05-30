@@ -28,12 +28,12 @@ import PIL
 from PIL import Image, ImageDraw, ImageFilter
 import json
 # from authors_dict import df_authors, name_replacements
-from copyright import display_custom_license
-from sidebar_content import sidebar_content
+# from copyright import display_custom_license
+# from sidebar_content import sidebar_content
 import plotly.graph_objs as go
 import feedparser
 import requests
-from format_entry import format_entry
+# from format_entry import format_entry
 # from rss_feed import df_podcast, df_magazines
 
 # Connecting Zotero with API 
