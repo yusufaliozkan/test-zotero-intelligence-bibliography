@@ -49,6 +49,32 @@ st.set_page_config(layout = "wide",
                     initial_sidebar_state="auto") 
 pd.set_option('display.max_colwidth', None)
 
+
+try:
+    options = ['cat', 'dog', 'mouse', 'bat', 'duck']
+
+    query_params = st.experimental_get_query_params()
+    query_option = query_params['option'][0] #throws an exception when visiting http://host:port
+
+    option_selected = st.sidebar.selectbox('Pick option',
+                                            options,
+                                            index=options.index(query_option))
+    if option_selected:
+        st.experimental_set_query_params(option=option_selected)
+
+except: # catch exception and set query param to predefined value
+    options = ['cat', 'dog', 'mouse', 'bat', 'duck']
+    st.experimental_set_query_params(option=options[1]) # defaults to dog
+
+    query_params = st.experimental_get_query_params()
+    query_option = query_params['option'][0]
+
+    option_selected = st.sidebar.selectbox('Pick option',
+                                            options,
+                                            index=options.index(query_option))
+    if option_selected:
+        st.experimental_set_query_params(option=option_selected)
+
 zot = zotero.Zotero(library_id, library_type)
 @st.cache_data(ttl=600)
 def zotero_data(library_id, library_type):
